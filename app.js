@@ -1,31 +1,83 @@
-// 页面切换
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>{
-    p.classList.remove('active');
-  });
-  document.getElementById(id).classList.add('active');
-}
+// ========== 数据 ==========
+let data = [];
+let timer = null;
 
-// 保存数据
-function saveData(){
-  let data = document.getElementById("input").value;
-  localStorage.setItem("mk6_data", data);
-  alert("数据已保存");
-}
+// ========== 初始化 ==========
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Mark6 AI 已启动");
 
-// AI生成（第2阶段会升级）
-function generate(){
+    loadData();
+    startAutoRefresh();
+});
 
-  let result = [];
+// ========== 模拟数据加载 ==========
+function loadData() {
+    // 模拟“开奖数据”
+    const newNumbers = generateNumbers();
 
-  while(result.length < 7){
-    let n = Math.floor(Math.random()*49)+1;
-    if(!result.includes(n)){
-      result.push(n);
+    data.unshift(newNumbers);
+
+    if (data.length > 20) {
+        data.pop();
     }
-  }
 
-  document.getElementById("result").innerHTML =
-    "推荐号码：<br>" + result.slice(0,6).join(" - ") +
-    " + " + result[6];
+    updateDashboard();
+    updateAnalysis();
+}
+
+// ========== 生成7个号码（六合彩规则） ==========
+function generateNumbers() {
+    let nums = [];
+
+    while (nums.length < 7) {
+        let n = Math.floor(Math.random() * 49) + 1;
+        if (!nums.includes(n)) {
+            nums.push(n);
+        }
+    }
+
+    return nums.sort((a, b) => a - b);
+}
+
+// ========== 更新仪表盘 ==========
+function updateDashboard() {
+    document.querySelector(".data-status").innerText = "已加载";
+    document.querySelector(".record-count").innerText = data.length;
+}
+
+// ========== 更新分析 ==========
+function updateAnalysis() {
+    const box = document.getElementById("analysisBox");
+
+    if (!box) return;
+
+    if (data.length === 0) {
+        box.innerText = "暂无数据";
+        return;
+    }
+
+    box.innerHTML = data
+        .slice(0, 10)
+        .map(item => item.join(" - "))
+        .join("<br>");
+}
+
+// ========== 自动刷新 ==========
+function startAutoRefresh() {
+    timer = setInterval(() => {
+        loadData();
+    }, 5000); // 每5秒更新一次
+}
+
+// ========== AI选号 ==========
+function generate() {
+    const resultBox = document.getElementById("result");
+
+    const result = generateNumbers();
+
+    resultBox.innerHTML = `
+        <div style="font-size:20px;color:#e91e63;">
+            ${result.join(" - ")}
+        </div>
+    `;
 }
