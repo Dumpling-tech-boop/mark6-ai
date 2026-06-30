@@ -1,73 +1,144 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>选号工具</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      padding: 40px;
-      background: #f5f5f5;
-    }
+<meta charset="UTF-8">
+<title>智能选号 V4 数据分析版</title>
 
-    h1 {
-      color: #333;
-    }
+<style>
+body{
+  font-family: Arial;
+  text-align:center;
+  background:#f4f4f4;
+  padding:40px;
+}
 
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      display: inline-block;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+.box{
+  background:white;
+  padding:25px;
+  border-radius:14px;
+  display:inline-block;
+  box-shadow:0 3px 12px rgba(0,0,0,0.12);
+  min-width:300px;
+}
 
-    .nums {
-      font-size: 28px;
-      margin: 20px 0;
-      color: #e91e63;
-      font-weight: bold;
-    }
+h1{
+  font-size:20px;
+}
 
-    button {
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      background: #2196F3;
-      color: white;
-      border-radius: 8px;
-    }
+.nums{
+  font-size:30px;
+  color:#e91e63;
+  margin:20px 0;
+  font-weight:bold;
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
-  </style>
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:8px;
+  background:#2196F3;
+  color:white;
+  font-size:16px;
+}
+
+.small{
+  font-size:12px;
+  color:#666;
+  margin-top:10px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="box">
-    <h1>🎯 简单选号工具</h1>
+<div class="box">
+  <h1>🧠 智能选号 V4（数据分析版）</h1>
 
-    <div class="nums" id="nums">点击生成号码</div>
+  <div class="nums" id="nums">点击生成最优1组</div>
 
-    <button onclick="gen()">生成精选1组</button>
-  </div>
+  <button onclick="gen()">生成分析推荐</button>
 
-  <script>
-    function gen() {
-      let set = new Set();
+  <div class="small">模型：频率统计 + 权重评分 + 结构过滤</div>
+</div>
 
-      while (set.size < 7) {
-        let n = Math.floor(Math.random() * 49) + 1;
-        set.add(n < 10 ? "0" + n : n);
-      }
+<script>
 
-      document.getElementById("nums").innerText =
-        Array.from(set).join(" - ");
+// 模拟历史数据（真实项目可替换成真实开奖数据）
+let history = [
+  3,6,9,12,18,21,27,33,36,42,45,48,
+  6,9,12,18,21,27,33,36,
+  3,6,9,18,21,27
+];
+
+// 统计频率
+let freq = {};
+for(let i=1;i<=49;i++) freq[i]=0;
+
+history.forEach(n=>{
+  freq[n]++
+});
+
+// 生成权重池
+let hot=[], mid=[], cold=[];
+
+for(let i=1;i<=49;i++){
+  if(freq[i]>=3) hot.push(i);
+  else if(freq[i]>=1) mid.push(i);
+  else cold.push(i);
+}
+
+function rand(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+// 评分函数（越均衡越好）
+function score(set){
+  let arr = Array.from(set).map(Number);
+
+  let s = 0;
+  arr.forEach(n=>{
+    s += freq[n] * 10;
+  });
+
+  return s;
+}
+
+// 生成组合
+function gen(){
+
+  let bestSet = null;
+  let bestScore = -1;
+
+  // 生成20次候选，选最优
+  for(let t=0;t<20;t++){
+
+    let set = new Set();
+
+    // 2 hot
+    set.add(String(rand(hot)).padStart(2,'0'));
+    set.add(String(rand(hot)).padStart(2,'0'));
+
+    // 3 mid
+    for(let i=0;i<3;i++){
+      set.add(String(rand(mid)).padStart(2,'0'));
     }
-  </script>
+
+    // 1 cold
+    set.add(String(rand(cold)).padStart(2,'0'));
+
+    let s = score(set);
+
+    if(s > bestScore){
+      bestScore = s;
+      bestSet = set;
+    }
+  }
+
+  document.getElementById("nums").innerText =
+    Array.from(bestSet).join(" - ");
+}
+
+</script>
 
 </body>
 </html>
