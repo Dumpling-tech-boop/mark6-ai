@@ -2,184 +2,68 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<title>六合彩智能分析 V10 终极版</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-body{
-  font-family: Arial;
-  text-align:center;
-  background:#f4f4f4;
-  padding:20px;
-}
-
-.box{
-  background:white;
-  padding:20px;
-  border-radius:14px;
-  display:inline-block;
-  box-shadow:0 3px 12px rgba(0,0,0,0.12);
-  max-width:700px;
-}
-
-textarea{
-  width:100%;
-  height:120px;
-  margin-top:10px;
-}
-
-.nums{
-  font-size:22px;
-  color:#e91e63;
-  margin:15px 0;
-  font-weight:bold;
-  white-space:pre-line;
-}
-
-button{
-  padding:10px 14px;
-  border:none;
-  border-radius:8px;
-  background:#2196F3;
-  color:white;
-  font-size:14px;
-  margin:5px;
-}
-
-.tip{
-  font-size:12px;
-  color:#666;
-}
-</style>
+<title>Mark6 AI Pro 1.0</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="box">
+<div class="app">
 
-<h2>🧠 六合彩智能分析 V10 终极版</h2>
+  <!-- 左侧菜单 -->
+  <div class="sidebar">
+    <h2>🧠 Mark6 AI</h2>
 
-<p class="tip">支持数据导入 + AI权重分析 + 7码推荐</p>
+    <button onclick="showPage('dashboard')">📊 仪表盘</button>
+    <button onclick="showPage('data')">📂 数据管理</button>
+    <button onclick="showPage('analysis')">📈 数据分析</button>
+    <button onclick="showPage('ai')">🤖 AI选号</button>
+    <button onclick="showPage('settings')">⚙ 设置</button>
 
-<textarea id="input">
-03 06 12 18 21 27 33
-06 09 12 18 21 27 45
-03 06 09 18 21 33 42
-05 11 17 23 29 35 41
-</textarea>
+  </div>
 
-<br>
+  <!-- 主区域 -->
+  <div class="main">
 
-<button onclick="analyze()">📊 数据分析</button>
-<button onclick="draw()">📈 图表分析</button>
-<button onclick="generate()">🎯 AI推荐7码</button>
+    <!-- 仪表盘 -->
+    <div id="dashboard" class="page active">
+      <h1>📊 仪表盘</h1>
+      <div class="card">📌 数据状态：未加载</div>
+      <div class="card">📌 收录期数：0</div>
+      <div class="card">📌 AI模型：未启动</div>
+    </div>
 
-<div class="nums" id="result">等待分析...</div>
+    <!-- 数据 -->
+    <div id="data" class="page">
+      <h1>📂 数据管理</h1>
+      <textarea id="input" placeholder="粘贴历史开奖数据..."></textarea>
+      <button onclick="saveData()">保存数据</button>
+    </div>
 
-<canvas id="chart" width="600" height="300"></canvas>
+    <!-- 分析 -->
+    <div id="analysis" class="page">
+      <h1>📈 数据分析</h1>
+      <div id="analysisBox">暂无数据</div>
+    </div>
+
+    <!-- AI -->
+    <div id="ai" class="page">
+      <h1>🤖 AI选号</h1>
+      <button onclick="generate()">生成推荐</button>
+      <div id="result"></div>
+    </div>
+
+    <!-- 设置 -->
+    <div id="settings" class="page">
+      <h1>⚙ 设置</h1>
+      <p>后续可调权重参数</p>
+    </div>
+
+  </div>
 
 </div>
 
-<script>
-
-let freq = Array(50).fill(0);
-let weight = Array(50).fill(1);
-
-// 数据分析
-function analyze(){
-  freq = Array(50).fill(0);
-
-  let lines = document.getElementById("input").value.trim().split("\n");
-
-  lines.forEach(line=>{
-    line.split(" ").forEach(n=>{
-      let num = parseInt(n);
-      if(num>=1 && num<=49){
-        freq[num]++;
-      }
-    });
-  });
-
-  // 生成权重
-  for(let i=1;i<=49;i++){
-    weight[i] = 1 + freq[i]*2;
-    if(freq[i]==0) weight[i]+=1.5;
-  }
-
-  document.getElementById("result").innerText = "数据分析完成 ✔";
-}
-
-// 图表
-function draw(){
-  let labels=[], data=[];
-
-  for(let i=1;i<=49;i++){
-    labels.push(i);
-    data.push(freq[i]);
-  }
-
-  new Chart(document.getElementById("chart"),{
-    type:'bar',
-    data:{
-      labels:labels,
-      datasets:[{
-        label:'号码出现次数',
-        data:data,
-        backgroundColor:'#42a5f5'
-      }]
-    }
-  });
-}
-
-// 随机函数
-function randWeighted(){
-  let sum = weight.reduce((a,b)=>a+b,0);
-  let r = Math.random()*sum;
-
-  for(let i=1;i<=49;i++){
-    r -= weight[i];
-    if(r<=0) return i;
-  }
-  return 1;
-}
-
-// 生成7码
-function generate(){
-
-  let best=null;
-  let bestScore=-1;
-
-  for(let t=0;t<60;t++){
-
-    let set=new Set();
-
-    while(set.size<7){
-      set.add(randWeighted());
-    }
-
-    let arr=[...set];
-
-    // 评分
-    let score=0;
-    arr.forEach(n=>{
-      score += weight[n];
-    });
-
-    if(score>bestScore){
-      bestScore=score;
-      best=set;
-    }
-  }
-
-  let arr=[...best];
-
-  document.getElementById("result").innerText =
-    "正码：" + arr.slice(0,6).join(" - ") +
-    "\n特码：" + arr[6];
-}
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
