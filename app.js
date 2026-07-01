@@ -81,3 +81,33 @@ function generate() {
         </div>
     `;
 }
+// Page navigation
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+}
+
+// CSV upload handler
+function handleUpload() {
+    const file = document.getElementById('csvFile').files[0];
+    if (!file) return alert("请选择文件");
+    importCSV(file);
+}
+
+// Fix dashboard update to match HTML
+function updateDashboard() {
+    const statusEl = document.querySelector(".data-status");
+    const countEl = document.querySelector(".record-count");
+    if (statusEl) statusEl.innerText = "已加载";
+    if (countEl) countEl.innerText = data.length;
+}
+
+// CSV import function (skeleton)
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        // Parse CSV and load data
+        console.log("CSV imported:", e.target.result);
+    };
+    reader.readAsText(file);
+}
