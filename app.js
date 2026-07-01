@@ -174,9 +174,52 @@ function handleUpload() {
             return;
         }
         
-        importCSV(file);
+         const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const text = e.target.result;
+
+            const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const [issue, numbersStr, special] = lines[i].split(",");
+
+                if (!numbersStr || !special) continue;
+
+                const numbers = numbersStr
+                    .replace(/"/g, "")
+                    .split("-")
+                    .map(n => parseInt(n));
+
+                result.push({
+                    issue: issue,
+                    numbers: numbers,
+                    special: parseInt(special)
+                });
+            }
+
+            const validData = validateData(result);
+
+            data = deduplicateData([...validData, ...data]);
+
+            if (data.length > 100) {
+                data = data.slice(0, 100);
+            }
+
+            localStorage.setItem("mark6_data", JSON.stringify(data));
+
+            updateDashboard();
+            updateAnalysis();
+
+            alert("CSV导入成功，共 " + data.length + " 条");
+        };
+
+        reader.readAsText(file);
+
     } catch (e) {
-        console.error('上传处理异常:', e);
+        console.error("上传处理异常:", e);
     }
 }
 
