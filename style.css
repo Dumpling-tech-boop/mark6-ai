@@ -1,6 +1,10 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: 'Arial', 'Segoe UI', sans-serif;
   background: #f4f4f4;
 }
 
@@ -9,46 +13,205 @@ body {
   height: 100vh;
 }
 
-/* 左侧 */
+/* ========== 左侧菜单 ========== */
 .sidebar {
   width: 220px;
-  background: #1e293b;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   color: white;
   padding: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  margin: 0 0 30px 0;
+  font-size: 24px;
+  text-align: center;
 }
 
 .sidebar button {
   width: 100%;
   margin: 8px 0;
-  padding: 10px;
+  padding: 12px;
   border: none;
   background: #334155;
   color: white;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
 .sidebar button:hover {
   background: #475569;
+  transform: translateX(5px);
 }
 
-/* 主区域 */
+.sidebar button:active {
+  background: #1e293b;
+}
+
+/* ========== 主区域 ========== */
 .main {
   flex: 1;
-  padding: 20px;
+  padding: 30px;
+  overflow-y: auto;
+  background: #f9fafb;
 }
 
+.main h1 {
+  color: #1f2937;
+  margin-top: 0;
+  border-bottom: 3px solid #e91e63;
+  padding-bottom: 10px;
+}
+
+.main h3 {
+  color: #374151;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* ========== 页面控制 ========== */
 .page {
   display: none;
+  animation: fadeIn 0.3s ease;
 }
 
 .page.active {
   display: block;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========== 卡片 ========== */
 .card {
   background: white;
-  padding: 15px;
-  margin: 10px 0;
+  padding: 20px;
+  margin: 15px 0;
   border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #e91e63;
+}
+
+.card span {
+  font-weight: bold;
+  color: #e91e63;
+}
+
+/* ========== 表单元素 ========== */
+textarea, input[type="text"], input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+textarea:focus, input:focus {
+  outline: none;
+  border-color: #e91e63;
+  box-shadow: 0 0 8px rgba(233, 30, 99, 0.2);
+}
+
+/* ========== 按钮 ========== */
+button {
+  padding: 10px 20px;
+  margin: 5px 5px 5px 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  background: #e91e63;
+  color: white;
+}
+
+button:hover {
+  background: #c2185b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ========== 分析框 ========== */
+#analysisBox {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+#result {
+  margin-top: 20px;
+}
+
+/* ========== HR 分割线 ========== */
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 20px 0;
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .sidebar button {
+    display: inline-block;
+    width: calc(50% - 4px);
+    margin: 4px;
+  }
+
+  .main {
+    padding: 15px;
+  }
+
+  .main h1 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar button {
+    width: 100%;
+    display: block;
+  }
+
+  .card {
+    padding: 15px;
+    margin: 10px 0;
+  }
+
+  button {
+    width: 100%;
+    margin: 5px 0;
+  }
 }
