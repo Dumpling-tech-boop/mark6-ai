@@ -37,6 +37,8 @@
     <!-- 数据 -->
     <div id="data" class="page">
       <h1>📂 数据管理</h1>
+      
+      <h3>粘贴数据</h3>
       <textarea id="input" placeholder="粘贴历史开奖数据..."></textarea>
       <button onclick="saveData()">保存数据</button>
       
@@ -44,11 +46,17 @@
       <h3>导入CSV文件</h3>
       <input type="file" id="csvFile" accept=".csv" />
       <button onclick="handleUpload()">导入CSV</button>
+      
+      <hr>
+      <h3>数据操作</h3>
+      <button onclick="exportCSV()">📥 导出CSV</button>
+      <button onclick="clearData()" style="background: #f97316;">🗑️ 清空数据</button>
     </div>
 
     <!-- 分析 -->
     <div id="analysis" class="page">
       <h1>📈 数据分析</h1>
+      <button onclick="showDetailAnalysis()">查看详细统计</button>
       <div id="analysisBox">暂无数据</div>
     </div>
 
@@ -56,12 +64,17 @@
     <div id="ai" class="page">
       <h1>🤖 AI选号</h1>
       <button onclick="generate()">生成推荐</button>
+      <button onclick="generateAIRecommendation()" style="background: #8b5cf6;">🧠 AI智能推荐</button>
       <div id="result"></div>
     </div>
 
     <!-- 设置 -->
     <div id="settings" class="page">
       <h1>⚙ 设置</h1>
+      <h3>API配置</h3>
+      <input type="text" id="apiUrl" placeholder="输入后端API地址（可选）" />
+      <button onclick="saveSettings()">保存设置</button>
+      <hr>
       <p>后续可调权重参数</p>
     </div>
 
@@ -70,7 +83,9 @@
 </div>
 
 <script src="app.js"></script>
+<script src="csv.js"></script>
+<script src="Chart.js"></script>
+<script src="api.js"></script>
 
 </body>
 </html>
-   
