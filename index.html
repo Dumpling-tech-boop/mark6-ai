@@ -67,3 +67,11 @@
 
 </body>
 </html>
+<input type="file" id="csvFile" />
+<button onclick="handleUpload()">导入CSV</button>
+function handleUpload() {
+    const file = document.getElementById('csvFile').files[0];
+    if (!file) return alert("请选择文件");
+
+    importCSV(file);
+}
