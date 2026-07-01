@@ -19,7 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Mark6 AI 已启动");
 
     loadData();
-    startAutoRefresh();
+    // 注释：取消自动刷新，改为手动刷新
+    // startAutoRefresh();
     loadSettings();
 });
 
@@ -37,6 +38,9 @@ function showPage(pageId) {
 }
 
 // ========== 模拟数据加载 ==========
+/**
+ * 加载数据（仅从本地存储，不自动生成）
+ */
 function loadData() {
     try {
         // 从本地存储加载数据
@@ -51,9 +55,9 @@ function loadData() {
                 data = [];
             }
         } else {
-            // 模拟初始数据
-            const newNumbers = generateNumbers();
-            data.unshift(newNumbers);
+            // 不再自动生成数据
+            console.log("本地存储为空，请导入数据或粘贴数据");
+            data = [];
         }
 
         if (data.length > 100) {
@@ -271,15 +275,61 @@ function showDetailAnalysis() {
     }
 }
 
-// ========== 自动刷新 ==========
-function startAutoRefresh() {
-    timer = setInterval(() => {
-        try {
-            loadData();
-        } catch (e) {
-            console.error('自动刷新异常:', e);
+// ========== 手动刷新数据 ==========
+/**
+ * 手动刷新数据（用户主动点击刷新按钮时调用）
+ */
+function refreshData() {
+    try {
+        console.log("用户手动刷新数据");
+        loadData();
+        alert("数据已刷新");
+    } catch (e) {
+        console.error('手动刷新异常:', e);
+    }
+}
+
+// ========== 启用自动刷新（可选） ==========
+/**
+ * 启用自动刷新（需要用户主动调用）
+ * @param {number} intervalSeconds - 刷新间隔（秒）
+ */
+function startAutoRefresh(intervalSeconds = 30) {
+    try {
+        if (timer) {
+            console.warn("自动刷新已启用，请勿重复启用");
+            return;
         }
-    }, 5000); // 每5秒更新一次
+        
+        timer = setInterval(() => {
+            try {
+                console.log("自动刷新数据...");
+                loadData();
+            } catch (e) {
+                console.error('自动刷新异常:', e);
+            }
+        }, intervalSeconds * 1000);
+        
+        console.log(`自动刷新已启用，间隔: ${intervalSeconds}秒`);
+    } catch (e) {
+        console.error('启用自动刷新异常:', e);
+    }
+}
+
+// ========== 停止自动刷新 ==========
+/**
+ * 停止自动刷新
+ */
+function stopAutoRefresh() {
+    try {
+        if (timer) {
+            clearInterval(timer);
+            timer = null;
+            console.log("自动刷新已停止");
+        }
+    } catch (e) {
+        console.error('停止自动刷新异常:', e);
+    }
 }
 
 // ========== AI选号 ==========
@@ -314,7 +364,7 @@ function saveSettings() {
             alert("设置已清除");
         }
     } catch (e) {
-        console.error('保存设置异常:', e);
+        console.error('保存设置异���:', e);
     }
 }
 
@@ -331,6 +381,6 @@ function loadSettings() {
             setAPIBaseURL(apiUrl);
         }
     } catch (e) {
-        console.error('加载设置���常:', e);
+        console.error('加载设置异常:', e);
     }
 }
