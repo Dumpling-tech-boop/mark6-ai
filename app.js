@@ -167,17 +167,37 @@ function handleUpload() {
             alert("请选择文件");
             return;
         }
-        
-        // 验证文件大小 (限制10MB)
+
         if (file.size > 10 * 1024 * 1024) {
             alert("文件过大，请选择小于10MB的文件");
             return;
         }
-        
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const text = e.target.result;
+
+            const lines = text
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(Boolean);
+
+            const result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+
+                const cols = lines[i].split(",").map(x => x.trim());
+
+                if (cols.length < 8) continue;
+
+                const numbers = cols.slice(1, 7).map(n => parseInt(n));
+                const special = parseInt(cols[7]);
+
                 result.push({
-                    issue: issue,
+                    issue: cols[0],
                     numbers: numbers,
-                    special: parseInt(special)
+                    special: special
                 });
             }
 
@@ -202,7 +222,7 @@ function handleUpload() {
     } catch (e) {
         console.error("上传处理异常:", e);
     }
-}
+    
 
 // ========== 生成7个号码（六合彩规则） ==========
 function generateNumbers() {
