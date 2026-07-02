@@ -175,7 +175,7 @@ function handleUpload() {
 
         const reader = new FileReader();
 
-        reader.onload = function (e) {
+                reader.onload = function (e) {
             const text = e.target.result;
 
             const lines = text
@@ -222,6 +222,7 @@ function handleUpload() {
     } catch (e) {
         console.error("上传处理异常:", e);
     }
+}
     
 
 // ========== 生成7个号码（六合彩规则） ==========
