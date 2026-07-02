@@ -174,25 +174,6 @@ function handleUpload() {
             return;
         }
         
-         const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const text = e.target.result;
-
-            const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-
-            const result = [];
-
-            for (let i = 1; i < lines.length; i++) {
-                const [issue, numbersStr, special] = lines[i].split(",");
-
-                if (!numbersStr || !special) continue;
-
-                const numbers = numbersStr
-                    .replace(/"/g, "")
-                    .split("-")
-                    .map(n => parseInt(n));
-
                 result.push({
                     issue: issue,
                     numbers: numbers,
