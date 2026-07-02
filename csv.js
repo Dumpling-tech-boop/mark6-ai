@@ -62,22 +62,22 @@ function parseCSV(text) {
         const cols = line.split(',').map(c => c.trim());
 
         // 检查格���：期数, 6个号码, 特码 = 至少8列
-        if (cols.length < 8) {
+        if (cols.length < 9) {
             console.warn("跳过行 " + i + "：列数不足");
             continue;
         }
 
         try {
-            const issue = cols[0];
+            const issue = cols[1];
             const numbers = [
-                parseInt(cols[1]),
                 parseInt(cols[2]),
                 parseInt(cols[3]),
                 parseInt(cols[4]),
                 parseInt(cols[5]),
-                parseInt(cols[6])
+                parseInt(cols[6]),
+                parseInt(cols[7])
             ];
-            const special = parseInt(cols[7]);
+            const special = parseInt(cols[8]);
             
             // 验证号码有效性
             if (numbers.some(n => isNaN(n) || n < 1 || n > 49) || isNaN(special)) {
